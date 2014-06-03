@@ -31,6 +31,7 @@ import XMonad.Actions.Plane
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.UrgencyHook
 import XMonad.Hooks.ICCCMFocus
+import XMonad.Actions.CycleWS
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import Data.Ratio ((%))
@@ -90,12 +91,12 @@ myUrgentWSRight = "}"
 myWorkspaces =
   [
     "7:Chat",  "8:Dbg", "9:Pix",
-    "4:Docs",  "5:Dev", "6:Web",
-    "1:Term",  "2:Hub", "3:Mail",
+    "4:Docs",  "5:Mail", "6:Keepassx",
+    "1:Term",  "2:Web", "3:Dev",
     "0:VM",    "Extr1", "Extr2"
   ]
 
-startupWorkspace = "5:Dev"  -- which workspace do you want to be on after launch?
+startupWorkspace = "1:Term"  -- which workspace do you want to be on after launch?
 
 {-
   Layout configuration. In this section we identify which xmonad
@@ -205,7 +206,10 @@ myKeyBindings =
     ((myModMask, xK_b), sendMessage ToggleStruts)
     , ((myModMask, xK_a), sendMessage MirrorShrink)
     , ((myModMask, xK_z), sendMessage MirrorExpand)
-    , ((myModMask, xK_p), spawn "synapse")
+    , ((myModMask,   xK_p), spawn "dmenu_run -b")
+    , ((myModMask .|. controlMask, xK_l), spawn "gnome-screensaver-command -l")
+
+    , ((myModMask, xK_comma), toggleWS)
     , ((myModMask, xK_u), focusUrgent)
     , ((0, 0x1008FF12), spawn "amixer -q set Master toggle")
     , ((0, 0x1008FF11), spawn "amixer -q set Master 10%-")
@@ -258,16 +262,16 @@ myKeyBindings =
 
 myManagementHooks :: [ManageHook]
 myManagementHooks = [
-  resource =? "synapse" --> doIgnore
-  , resource =? "stalonetray" --> doIgnore
-  , className =? "rdesktop" --> doFloat
-  , (className =? "Komodo IDE") --> doF (W.shift "5:Dev")
-  , (className =? "Komodo IDE" <&&> resource =? "Komodo_find2") --> doFloat
-  , (className =? "Komodo IDE" <&&> resource =? "Komodo_gotofile") --> doFloat
-  , (className =? "Komodo IDE" <&&> resource =? "Toplevel") --> doFloat
-  , (className =? "Empathy") --> doF (W.shift "7:Chat")
-  , (className =? "Pidgin") --> doF (W.shift "7:Chat")
-  , (className =? "Gimp-2.8") --> doF (W.shift "9:Pix")
+  resource =? "synapse"               --> doIgnore
+  , resource =? "stalonetray"         --> doIgnore
+  , className =? "rdesktop"           --> doFloat
+  , (className =? "Empathy")          --> doF (W.shift "7:Chat")
+  , (className =? "Pidgin")           --> doF (W.shift "7:Chat")
+  , (className =? "Gimp-2.8")         --> doF (W.shift "9:Pix")
+  , (className =? "Emacs24")          --> doF (W.shift "3:Dev")
+  , (className =? "Keepassx")         --> doF (W.shift "6:Keepassx")
+  , (className =? "Chromium-browser") --> doF (W.shift "2:Web")
+  , (className =? "Firefox")          --> doF (W.shift "2:Web")
   ]
 
 
