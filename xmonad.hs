@@ -44,8 +44,9 @@ import Data.Ratio ((%))
 myModMask            = mod4Mask       -- changes the mod key to "super"
 myFocusedBorderColor = "#ff0000"      -- color of focused border
 myNormalBorderColor  = "#cccccc"      -- color of inactive border
-myBorderWidth        = 1              -- width of border around windows
-myTerminal           = "terminator"   -- which terminal software to use
+myBorderWidth        = 2              -- width of border around windows
+--myTerminal           = "terminator"   -- which terminal software to use
+myTerminal           = "/usr/bin/xterm"
 myIMRosterTitle      = "Buddy List"   -- title of roster on IM workspace
                                       -- use "Buddy List" for Pidgin, but
                                       -- "Contact List" for Empathy
@@ -203,17 +204,30 @@ myLayouts =
 
 myKeyBindings =
   [
-    ((myModMask, xK_b), sendMessage ToggleStruts)
+    ( (myModMask, xK_b), sendMessage ToggleStruts)
     , ((myModMask, xK_a), sendMessage MirrorShrink)
     , ((myModMask, xK_z), sendMessage MirrorExpand)
     , ((myModMask,   xK_p), spawn "dmenu_run -b")
+    , ((myModMask .|. controlMask, xK_e), spawn "emacsclient -c --no-wait")
+    , ((myModMask .|. controlMask, xK_i), spawn "/home/seth/.local/bin/ipython qtconsole --profile ec --pylab inline")
     , ((myModMask .|. controlMask, xK_l), spawn "gnome-screensaver-command -l")
-
     , ((myModMask, xK_comma), toggleWS)
     , ((myModMask, xK_u), focusUrgent)
     , ((0, 0x1008FF12), spawn "amixer -q set Master toggle")
     , ((0, 0x1008FF11), spawn "amixer -q set Master 10%-")
     , ((0, 0x1008FF13), spawn "amixer -q set Master 10%+")
+     -- Audio previous.
+    , ((0, 0x1008FF16), spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
+
+     -- Play/pause.
+    , ((0, 0x1008FF14), spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
+
+     -- Audio next.
+    , ((0, 0x1008FF17), spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
+
+     -- Eject CD tray.
+    , ((0, 0x1008FF2C), spawn "eject -T")
+
   ]
 
 
@@ -338,7 +352,8 @@ myKeys = myKeyBindings ++
 -}
 
 main = do
-  xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc"
+  xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobar-top.hs"
+  spawn "/usr/bin/xmobar ~/.xmonad/xmobar.hs"
   xmonad $ withUrgencyHook NoUrgencyHook $ defaultConfig {
     focusedBorderColor = myFocusedBorderColor
   , normalBorderColor = myNormalBorderColor
