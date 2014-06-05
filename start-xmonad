@@ -82,8 +82,8 @@ nitrogen --restore &
 #
 stalonetray \
   --icon-gravity E \
-  --geometry 5x1-0+0 \
-  --max-geometry 5x1-0+0 \
+  --geometry 10x1-0+0 \
+  --max-geometry 10x1-0+0 \
   --background '#000000' \
   --skip-taskbar \
   --icon-size 24 \
