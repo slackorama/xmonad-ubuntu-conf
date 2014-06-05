@@ -21,11 +21,10 @@ if [ -z "$(pgrep system-config-printer-applet)" ] ; then
     system-config-printer-applet &
 fi
 
-# Start emacs daemon
-if [ -z "$(pgrep emacs)" ] ; then
-    emacs --daemon &
+dropbox running
+if [ $? -eq 0 ]; then
+    dropbox start
 fi
-
 
 #
 # APPLICATION LAUNCHER
